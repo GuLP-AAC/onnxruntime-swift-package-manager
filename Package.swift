@@ -92,12 +92,16 @@ if let pod_archive_path = ProcessInfo.processInfo.environment["ORT_POD_LOCAL_PAT
     package.targets.append(Target.binaryTarget(name: "onnxruntime", path: pod_archive_path))
 
 } else {
-    // ORT release. GuLP: download.onnxruntime.ai went offline in November 2026, so the unchanged archive is hosted on this repo's 1.24.2-gulp.1 release.
+    // ORT release. GuLP: download.onnxruntime.ai went offline in November 2026, so the archive is hosted on this repo's releases.
+    // 1.24.2-gulp.2 repackages Microsoft's 1.24.2 binaries, unchanged, as a static-LIBRARY xcframework
+    // (libonnxruntime.a, headers under Headers/onnxruntime/) instead of a static framework. Xcode embeds a static
+    // framework into apps and injects an empty stub binary into it, which App Store validation rejects (ITMS-90208);
+    // a library is linked in and nothing is embedded.
     package.targets.append(
        Target.binaryTarget(name: "onnxruntime",
-                           url: "https://github.com/GuLP-AAC/onnxruntime-swift-package-manager/releases/download/1.24.2-gulp.1/pod-archive-onnxruntime-c-1.24.2.zip",
+                           url: "https://github.com/GuLP-AAC/onnxruntime-swift-package-manager/releases/download/1.24.2-gulp.2/pod-archive-onnxruntime-c-1.24.2-static-lib.zip",
                            // SHA256 checksum
-                           checksum: "f7100a992d2a8135168c8afd831e6a58b465349101982aa58b3e11d36e600b54")
+                           checksum: "8c8120be351d4aadf04a986472f2c8367c1b131e1bec3bb3c7c8f3953916ca29")
     )
 }
 
